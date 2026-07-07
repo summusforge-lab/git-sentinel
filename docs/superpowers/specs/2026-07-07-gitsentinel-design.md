@@ -102,21 +102,28 @@ struct Finding {
 
 4. **`check_objects`** — for each file under `objects/xx/`: the parent
    directory name must be exactly 2 lowercase hex chars, the filename must
-   be 38 hex chars (SHA-1 loose object) or 62 hex chars (SHA-256 repo);
-   the file must not be executable; the first bytes must parse as a valid
-   zlib stream (attempt a bounded `flate2` decode of the header — full
-   content is not inspected). Any violation: CRITICAL. Under
-   `objects/pack/`: only `*.pack`, `*.idx`, `*.rev` are expected; anything
-   else is CRITICAL.
+   be 38 hex chars (SHA-1 loose object) or 62 hex chars (SHA-256 repo); the
+   first bytes must parse as a valid zlib stream (attempt a bounded
+   `flate2` decode of the header — full content is not inspected). Any
+   violation: CRITICAL. Under `objects/pack/`: only `*.pack`, `*.idx`,
+   `*.rev` are expected; anything else is CRITICAL. Executable-bit
+   violations are not checked here — see `check_permissions` below.
 
 5. **`check_refs`** — for `refs/heads/**`, `refs/tags/**`,
    `refs/remotes/**`, and `packed-refs`: content must be a bare hex SHA
-   (40 or 64 chars) or a symref line (`ref: refs/...`). Anything else, or
-   an executable bit set on any of these files: CRITICAL.
+   (40 or 64 chars) or a symref line (`ref: refs/...`). Anything else:
+   CRITICAL. Executable-bit violations are not checked here — see
+   `check_permissions` below.
 
-6. **`check_permissions`** — global pass: any file anywhere under `.git`
+6. **`check_permissions`** — global pass, and the *sole* check responsible
+   for executable-bit violations: any file anywhere under `.git`
    with the executable bit set, outside of `hooks/`, is CRITICAL (git never
    sets +x on its own tracked metadata outside hooks).
+
+Executable-bit enforcement is centralized in `check_permissions` rather
+than duplicated in `check_objects`/`check_refs`, so a single tampered file
+(e.g. an executable loose object) produces one CRITICAL finding, not two
+near-identical ones under different categories.
 
 ### Severity model
 
