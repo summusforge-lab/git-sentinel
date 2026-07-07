@@ -36,6 +36,12 @@ config directives.
 
 Both are reasonable v2 follow-ups but out of scope here.
 
+## Naming
+
+Cargo package name: `git-sentinel` (kebab-case, matches crates.io convention).
+Binary name: `gitsentinel` (no hyphen — set via an explicit `[[bin]]` section
+in `Cargo.toml` since it differs from the package name).
+
 ## Architecture
 
 ```
