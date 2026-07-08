@@ -6,7 +6,7 @@
 
 **Architecture:** `CLI (clap) -> discovery (recursive .git finder) -> checks (six independent per-repo structural checks) -> report (colored terminal output) -> exit code`. Checks are pure functions of a `.git` directory path that return `Vec<Finding>`; they share no mutable state and can be implemented/tested independently.
 
-**Tech Stack:** Rust 2021 edition, `clap` (derive), `walkdir`, `flate2`, `colored`, `tempfile` (dev-dependency). Unix-only executable-bit detection (`std::os::unix::fs::PermissionsExt`); on non-unix targets `is_executable` always returns `false`.
+**Tech Stack:** Rust 2024 edition, `clap` (derive), `walkdir`, `flate2`, `colored`, `tempfile` (dev-dependency). Unix-only executable-bit detection (`std::os::unix::fs::PermissionsExt`); on non-unix targets `is_executable` always returns `false`.
 
 Spec: `docs/superpowers/specs/2026-07-07-gitsentinel-design.md`
 
@@ -49,7 +49,7 @@ Replace the generated `Cargo.toml` with:
 [package]
 name = "git-sentinel"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 autobins = false
 
 [[bin]]
