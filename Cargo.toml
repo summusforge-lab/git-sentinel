@@ -13,6 +13,9 @@ clap = { version = "4", features = ["derive"] }
 walkdir = "2"
 flate2 = "1"
 colored = "2"
+#Check if executable file
+is_executable = "1.0"
+
 
 [dev-dependencies]
 tempfile = "3"
